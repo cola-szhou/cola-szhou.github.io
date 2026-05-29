@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en" data-mode="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Shasha Zhou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --bg:#ffffff;
+    --bg-soft:#fafaf9;
+    --ink:#0e1116;
+    --ink-2:#262b35;
+    --ink-3:#525866;
+    --line:rgba(15,17,22,.10);
+    --line-soft:rgba(15,17,22,.06);
+    --accent:#0f766e;   /* teal */
+    --accent-soft:rgba(15,118,110,.10);
+    --paper:#ffffff;
+    --serif:'Newsreader','Iowan Old Style',Georgia,serif;
+    --sans:'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  html[data-mode="dark"]{
+    --bg:#0c0d10;
+    --bg-soft:#15171c;
+    --ink:#eef0f5;
+    --ink-2:#d4d8e0;
+    --ink-3:#9ca3af;
+    --line:rgba(238,240,245,.12);
+    --line-soft:rgba(238,240,245,.06);
+    --accent:#14b8a6;
+    --accent-soft:rgba(20,184,166,.15);
+    --paper:#15171c;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;font-weight:400;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+  ::selection{background:var(--accent-soft);color:var(--ink)}
+
+  .wrap{max-width:980px;margin:0 auto;padding:0 32px}
+
+  /* ─── NAV ─── */
+  .nav{
+    position:sticky;top:0;z-index:50;background:color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter:blur(10px) saturate(140%);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{font-family:var(--serif);font-size:22px;font-weight:500;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;color:var(--ink)}
+  .brand .b1{font-style:italic;color:var(--accent)}
+  .brand .b2{color:var(--ink)}
+  .links{display:flex;gap:4px;align-items:center}
+  .links a{
+    color:var(--ink-2);font-size:14px;font-weight:500;padding:8px 12px;border-radius:8px;
+    text-decoration:none;position:relative;transition:color .15s ease;
+  }
+  .links a:hover{color:var(--ink);text-decoration:none}
+  .links a::after{
+    content:"";position:absolute;left:12px;right:12px;bottom:4px;height:1.5px;background:var(--accent);
+    transform:scaleX(0);transform-origin:left;transition:transform .25s cubic-bezier(.2,.7,.2,1);
+  }
+  .links a:hover::after{transform:scaleX(1)}
+  .mode-btn{
+    appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink-2);
+    width:36px;height:36px;border-radius:10px;cursor:pointer;display:grid;place-items:center;
+    transition:all .2s ease;margin-left:6px;
+  }
+  .mode-btn:hover{color:var(--ink);border-color:var(--ink-3)}
+  .mode-btn svg{width:16px;height:16px}
+  html[data-mode="light"] .mode-btn .moon{display:block}
+  html[data-mode="light"] .mode-btn .sun{display:none}
+  html[data-mode="dark"]  .mode-btn .moon{display:none}
+  html[data-mode="dark"]  .mode-btn .sun{display:block}
+
+  /* ─── HERO ─── */
+  .hero{padding:64px 0 32px;display:grid;grid-template-columns:1fr 280px;gap:56px;align-items:center}
+  .hero h1{
+    font-family:var(--serif);font-weight:500;font-size:54px;line-height:1.05;letter-spacing:-.02em;margin:0 0 6px;
+  }
+  .hero h1 .italic{font-style:italic;color:var(--accent)}
+  .hero .sub{
+    font-size:16px;color:var(--ink-3);margin:0 0 28px;font-weight:400;
+  }
+  .hero .sub b{color:var(--ink-2);font-weight:500}
+  .hero p.bio{font-size:16.5px;color:var(--ink-2);margin:0 0 14px;line-height:1.7;max-width:62ch}
+  .hero p.bio strong{color:var(--ink);font-weight:600}
+  .hero p.bio a{font-weight:500}
+
+  .portrait-wrap{position:relative}
+  .portrait{
+    aspect-ratio:1;border-radius:50%;
+    background:
+      repeating-linear-gradient(135deg, var(--accent-soft) 0 8px, transparent 8px 16px),
+      var(--bg-soft);
+    border:1px solid var(--line);
+    display:grid;place-items:center;color:var(--ink-3);font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+    position:relative;overflow:hidden;
+  }
+  .portrait::before{
+    content:"";position:absolute;inset:-2px;border-radius:50%;
+    background:conic-gradient(from 180deg, var(--accent), transparent 40%, var(--accent) 70%, transparent);
+    z-index:-1;animation:spin 16s linear infinite;opacity:.35;
+  }
+  .portrait-wrap::before{
+    content:"";position:absolute;inset:-8px;border-radius:50%;
+    background:conic-gradient(from 0deg, var(--accent), transparent 30%, var(--accent) 60%, transparent 90%);
+    filter:blur(20px);opacity:.18;animation:spin 20s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(1turn)}}
+  .portrait span{background:var(--bg);padding:4px 9px;border-radius:99px;border:1px solid var(--line);z-index:1}
+
+  .socials{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;justify-content:center}
+  .socials a{
+    color:var(--ink-2);width:34px;height:34px;border-radius:10px;border:1px solid var(--line);
+    display:grid;place-items:center;transition:all .15s ease;text-decoration:none;
+  }
+  .socials a:hover{color:var(--bg);background:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
+  .socials svg{width:15px;height:15px}
+  .socials a.cv-text{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.04em}
+
+  /* ─── SECTION ─── */
+  section{padding:48px 0;border-top:1px solid var(--line-soft)}
+  h2.sect{
+    font-family:var(--serif);font-weight:500;font-size:32px;margin:0 0 6px;letter-spacing:-.01em;color:var(--ink);
+    display:flex;align-items:baseline;gap:14px;
+  }
+  h2.sect .tag{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);background:var(--bg-soft);padding:3px 8px;border-radius:99px;border:1px solid var(--line-soft)}
+  .sect-sub{font-size:14px;color:var(--ink-3);margin:0 0 28px}
+
+  /* ─── NEWS ─── */
+  .news{display:flex;flex-direction:column;border-radius:14px;border:1px solid var(--line);overflow:hidden;background:var(--paper)}
+  .news-row{display:grid;grid-template-columns:108px 1fr;gap:24px;padding:14px 20px;align-items:start;font-size:14.5px}
+  .news-row + .news-row{border-top:1px solid var(--line-soft)}
+  .news-row .date{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);padding-top:2px;letter-spacing:.04em;white-space:nowrap}
+  .news-row .what{color:var(--ink-2);line-height:1.55}
+  .news-row .what b{color:var(--ink);font-weight:600}
+  .news-row .what .pin{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:2px 6px;border-radius:4px;margin-right:8px;vertical-align:1px}
+
+  /* ─── RESEARCH ─── */
+  .themes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .theme{
+    border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--paper);
+    transition:all .25s cubic-bezier(.2,.7,.2,1);
+  }
+  .theme:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 30px -12px var(--accent-soft)}
+  .theme .ix{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.18em;font-weight:500}
+  .theme h3{font-family:var(--serif);font-weight:500;font-size:20px;line-height:1.2;margin:10px 0 8px;letter-spacing:-.005em;color:var(--ink)}
+  .theme p{font-size:13.5px;color:var(--ink-2);margin:0;line-height:1.55}
+
+  /* ─── PUBLICATIONS ─── */
+  .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+  .filters button{
+    appearance:none;border:1px solid var(--line);background:transparent;color:var(--ink-2);
+    font:500 12.5px/1 var(--sans);padding:8px 13px;border-radius:99px;cursor:pointer;
+    transition:all .15s ease;
+  }
+  .filters button:hover{border-color:var(--ink-3);color:var(--ink)}
+  .filters button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  html[data-mode="dark"] .filters button.on{color:#0c0d10}
+
+  .year-group{display:grid;grid-template-columns:88px 1fr;gap:32px;padding:18px 0;border-top:1px solid var(--line-soft)}
+  .year-group:first-of-type{border-top:0}
+  .year-group .yr{
+    font-family:var(--serif);font-weight:500;font-style:italic;font-size:32px;color:var(--ink);
+    line-height:1;padding-top:14px;letter-spacing:-.02em;position:sticky;top:80px;height:fit-content;
+  }
+  .year-pubs{display:flex;flex-direction:column}
+  .pub{
+    display:grid;grid-template-columns:90px 1fr;gap:20px;padding:18px 0;align-items:start;
+    border-top:1px dashed var(--line-soft);
+  }
+  .pub:first-child{border-top:0;padding-top:14px}
+  .pub .thumb{
+    aspect-ratio:4/3;border-radius:8px;background:var(--bg-soft);border:1px solid var(--line);
+    overflow:hidden;position:relative;display:grid;place-items:center;
+    font-family:var(--mono);font-size:9.5px;color:var(--ink-3);letter-spacing:.06em;text-align:center;
+  }
+  .pub .thumb.t-bio{background:
+    radial-gradient(circle at 30% 40%, color-mix(in oklab, var(--accent) 40%, transparent), transparent 50%),
+    repeating-linear-gradient(45deg, color-mix(in oklab, var(--accent) 12%, var(--bg-soft)) 0 4px, var(--bg-soft) 4px 8px);
+  }
+  .pub .thumb.t-agents{background:
+    conic-gradient(from 30deg at 50% 50%, var(--accent-soft), transparent 40%, var(--accent-soft) 60%, transparent),
+    var(--bg-soft);
+  }
+  .pub .thumb.t-robust{background:
+    linear-gradient(135deg, color-mix(in oklab, var(--accent) 30%, transparent) 0%, transparent 50%, color-mix(in oklab, var(--accent) 20%, transparent) 100%),
+    var(--bg-soft);
+  }
+  .pub .thumb span{background:var(--bg);padding:3px 7px;border-radius:4px;border:1px solid var(--line)}
+  .pub .body{display:flex;flex-direction:column;gap:5px}
+  .pub .title{
+    font-size:16.5px;font-weight:600;color:var(--accent);line-height:1.35;letter-spacing:-.005em;
+  }
+  .pub .title a{color:inherit;text-decoration:none}
+  .pub .title a:hover{text-decoration:underline;text-underline-offset:3px}
+  .pub .authors{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+  .pub .authors .me{color:var(--ink);font-weight:700}
+  .pub .venue{font-size:13px;color:var(--ink-3);line-height:1.5}
+  .pub .venue em{color:var(--ink-2);font-style:italic;font-weight:500}
+  .pub .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;align-items:center}
+  .pub .badge{
+    font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+    padding:2px 7px;border-radius:4px;color:var(--accent);background:var(--accent-soft);
+  }
+  .pub .badge.oral{color:#c2410c;background:rgba(194,65,12,.08)}
+  html[data-mode="dark"] .pub .badge.oral{color:#fb923c;background:rgba(251,146,60,.12)}
+  .pub .badge.review{color:var(--ink-3);background:var(--bg-soft);border:1px solid var(--line)}
+  .pub .btns{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .pub .btns a{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;
+    padding:3px 8px;border-radius:5px;border:1px solid var(--accent);color:var(--accent);
+    text-decoration:none;transition:all .15s ease;
+  }
+  .pub .btns a:hover{background:var(--accent);color:#fff;text-decoration:none}
+  html[data-mode="dark"] .pub .btns a:hover{color:#0c0d10}
+  .pub .btns a.on{background:var(--accent);color:#fff}
+  html[data-mode="dark"] .pub .btns a.on{color:#0c0d10}
+  .pub .abs-panel{
+    margin-top:10px;padding:12px 14px;
+    background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:8px;
+    font-size:13px;color:var(--ink-2);line-height:1.65;
+  }
+  .pub .bib-panel{
+    margin-top:10px;padding:12px 14px;
+    background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:8px;
+    position:relative;
+  }
+  .pub .bib-panel pre{
+    font-family:var(--mono);font-size:11.5px;color:var(--ink-2);line-height:1.55;
+    margin:0;padding-right:60px;white-space:pre-wrap;word-wrap:break-word;
+  }
+  .pub .bib-panel .copy-btn{
+    position:absolute;top:8px;right:8px;
+    appearance:none;border:1px solid var(--line);background:var(--paper);
+    font:500 9.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
+    padding:5px 9px;border-radius:5px;cursor:pointer;transition:all .15s ease;
+  }
+  .pub .bib-panel .copy-btn:hover{color:var(--accent);border-color:var(--accent)}
+
+  /* ─── SOFTWARE ─── */
+  .software{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .repo{
+    border:1px solid var(--line);border-radius:12px;padding:18px;background:var(--paper);
+    display:flex;flex-direction:column;gap:6px;transition:all .2s ease;
+    text-decoration:none;color:inherit;
+  }
+  .repo:hover{border-color:var(--accent);transform:translateY(-2px);text-decoration:none}
+  .repo h4{font-family:var(--serif);font-weight:500;font-size:18px;margin:0;color:var(--accent)}
+  .repo .slug{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .repo p{font-size:13.5px;color:var(--ink-2);margin:4px 0 0;line-height:1.55}
+  .repo .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .repo .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:2px 7px;border:1px solid var(--line);border-radius:99px}
+
+  /* ─── HONORS ─── */
+  .honor-row{display:grid;grid-template-columns:108px 1fr auto;gap:24px;padding:14px 0;border-top:1px solid var(--line-soft);align-items:baseline;font-size:14.5px}
+  .honor-row:first-child{border-top:0}
+  .honor-row .date{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
+  .honor-row .what{color:var(--ink-2);line-height:1.55}
+  .honor-row .what b{color:var(--ink);font-weight:600}
+  .honor-row .what .sub{font-size:13px;color:var(--ink-3);font-style:italic;margin-top:2px;display:block}
+  .honor-row .amt{font-family:var(--mono);font-size:12px;color:var(--accent);white-space:nowrap;font-weight:500}
+
+  /* ─── TALKS / SERVICE ─── */
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+  .twocol h3{font-family:var(--serif);font-weight:500;font-size:18px;margin:0 0 6px;color:var(--ink)}
+  .twocol .sub{font-size:13px;color:var(--ink-3);margin:0 0 16px}
+  .talk{display:grid;grid-template-columns:108px 1fr;gap:18px;padding:12px 0;border-top:1px solid var(--line-soft);font-size:14px;align-items:baseline}
+  .talk:first-of-type{border-top:0}
+  .talk .date{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+  .talk .what{color:var(--ink-2)}
+  .talk .what b{color:var(--ink);font-weight:600}
+  .talk .what .loc{color:var(--ink-3);font-size:12.5px;margin-left:6px}
+  .service{margin:0;padding:0;list-style:none}
+  .service li{padding:12px 0;border-top:1px solid var(--line-soft);font-size:14px;color:var(--ink-2);line-height:1.55}
+  .service li:first-child{border-top:0}
+  .service b{color:var(--ink);font-weight:600}
+
+  /* ─── FOOTER ─── */
+  footer{
+    padding:48px 0 56px;border-top:1px solid var(--line-soft);text-align:center;
+    font-size:13px;color:var(--ink-3);
+  }
+  footer .big{font-family:var(--serif);font-style:italic;font-size:28px;color:var(--ink);margin-bottom:14px;display:block;letter-spacing:-.01em;font-weight:500}
+  footer .big a{color:var(--ink);text-decoration:none}
+  footer .big a:hover{color:var(--accent)}
+  footer .ln{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em}
+
+  /* ─── BACK TO TOP ─── */
+  .to-top{
+    position:fixed;right:max(16px, calc((100vw - 980px) / 2 - 100px));bottom:24px;z-index:60;
+    appearance:none;border:1px solid var(--line);background:color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter:blur(10px) saturate(140%);
+    color:var(--ink-2);width:40px;height:40px;border-radius:10px;
+    cursor:pointer;display:grid;place-items:center;
+    opacity:0;pointer-events:none;transform:translateY(8px);
+    transition:opacity .25s ease, transform .25s ease, color .15s ease, border-color .15s ease;
+  }
+  .to-top.show{opacity:1;pointer-events:auto;transform:none}
+  .to-top:hover{color:var(--accent);border-color:var(--accent)}
+  .to-top svg{width:16px;height:16px}
+  @media (max-width: 820px){ .to-top{right:16px;bottom:16px} }
+
+  /* ─── REVEAL ─── */
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.on{opacity:1;transform:none}
+
+  @media (max-width: 820px){
+    .wrap{padding:0 22px}
+    .hero{grid-template-columns:1fr;gap:32px;padding:36px 0 12px}
+    .hero h1{font-size:38px}
+    .portrait-wrap{max-width:200px;margin:0 auto}
+    .themes{grid-template-columns:1fr}
+    .software{grid-template-columns:1fr}
+    .twocol{grid-template-columns:1fr;gap:32px}
+    .year-group{grid-template-columns:1fr;gap:8px}
+    .year-group .yr{position:static;padding-top:0}
+    .pub{grid-template-columns:1fr;gap:10px}
+    .pub .thumb{max-width:120px}
+    .news-row{grid-template-columns:1fr;gap:4px}
+    .honor-row{grid-template-columns:1fr;gap:4px}
+    .talk{grid-template-columns:1fr;gap:2px}
+    .links{display:none}
+    h2.sect{font-size:26px}
+  }
+</style>
+</head>
+<body class="hide-thumbs">
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top"><span class="b1">shasha</span><span class="b2">zhou</span></a>
+    <div class="links">
+      <a href="#about">about</a>
+      <a href="#news">news</a>
+      <a href="#research">research</a>
+      <a href="#publications">publications</a>
+      <a href="#software">software</a>
+      <!-- <a href="#cv">cv</a> -->
+      <button class="mode-btn" id="mode-btn" aria-label="Toggle theme">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="top">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <h1>Shasha <span class="italic">Zhou</span></h1>
+      <p class="sub">PhD Candidate · <b>University of Exeter</b> · advised by <a href="https://colalab.ai" target="_blank" rel="noopener"><b>Dr. Ke Li</b></a></p>
+      <p class="bio">
+        Hi, I'm Shasha — a Computer Science PhD candidate at the <strong>University of Exeter</strong>, advised by <a href="https://colalab.ai" target="_blank" rel="noopener"><strong>Dr. Ke Li</strong></a>. I want foundation models in life sciences to be as accountable as the science they support.
+      </p>
+
+      <p class="bio">
+        My research builds toward this from three directions: models grounded in domain knowledge, agents whose answers trace back to evidence, and evaluation that survives scrutiny beyond held-out test sets.
+      </p>
+
+      <p class="bio">
+        I expect to graduate in <strong>Sep 2027</strong> and am exploring <strong>postdoctoral fellowships</strong> and <strong>industry research roles</strong> in AI for Science, foundation models, and trustworthy machine learning.
+      </p>
+      <p class="bio" style="color:var(--ink-3);font-size:14.5px;margin-top:18px">
+        📍 Exeter, UK &nbsp;·&nbsp; ✉️ <a href="mailto:sz484@exeter.ac.uk">sz484@exeter.ac.uk</a>
+      </p>
+    </div>
+
+    <div class="portrait-wrap">
+      <div class="portrait"><img src="me.png" style="width:110%;height:110%;object-fit:cover" alt="Shasha Zhou"></div>
+      <div class="socials">
+        <a href="mailto:sz484@exeter.ac.uk" title="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </a>
+        <a href="https://scholar.google.com/citations?user=KCYCyDQAAAAJ&hl=zh-CN" title="Google Scholar" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>
+        </a>
+        <a href="https://github.com/cola-szhou" title="GitHub" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.52-1.32-1.28-1.67-1.28-1.67-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.47.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.58.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.13v3.16c0 .31.21.67.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+        </a>
+        <a href="https://orcid.org/0000-0001-5972-5290" title="ORCID" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zM8 6a1.4 1.4 0 1 1 0 2.8A1.4 1.4 0 0 1 8 6zm1.2 12.6H6.8V9.4h2.4v9.2zm2-9.2h4.3c3.6 0 5.5 2.4 5.5 4.6 0 2.4-1.9 4.6-5.5 4.6h-4.3V9.4zm2.4 7.2h1.8c2.4 0 3.1-1.7 3.1-2.6 0-1.5-1-2.6-3.1-2.6h-1.8v5.2z"/></svg>
+        </a>
+        <a href="cv.pdf" title="CV (PDF)" target="_blank" rel="noopener" class="cv-text">CV</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- NEWS -->
+  <section id="news" class="reveal">
+    <h2 class="sect">News <span class="tag">latest</span></h2>
+    <p class="sect-sub">recent milestones from my research, collaborations, and academic activities.</p>
+    <div class="news">
+      <div class="news-row"><div class="date">Apr&nbsp;2026</div><div class="what"><span class="pin">grant</span>Awarded a second <b>Modal Research Grant</b> to support large-scale genomic FM experiments.</div></div>
+      <div class="news-row"><div class="date">Apr&nbsp;2026</div><div class="what"><span class="pin">paper</span>Our position paper on <b>genomic model interpretability</b> (with <b>Mingyu Huang</b>) accepted as <b>ICML 2026 Spotlight</b> (top 5%). Looking forward to Seoul.</div></div>
+      <div class="news-row"><div class="date">Mar&nbsp;2026</div><div class="what"><span class="pin">paper</span>Our paper on <b>PlantScience.ai</b>, a live AI co-scientist for plant biology, accepted to <b>Molecular Plant</b> (Cell Press, IF 24.1). Joint work with <b>Prof. Ding's group</b> (John Innes Centre / The Sainsbury Lab) and <b>Prof. Zhang's group</b> (Northeast Normal University). <a href="https://plantscience.ai/login" target="_blank" rel="noopener">Try the live agent</a>.</div></div>
+      <div class="news-row"><div class="date">Dec&nbsp;2025</div><div class="what"><span class="pin">grant</span>Awarded a <b>Modal Research Grant</b> to support work on genomic FM evaluation.</div></div>
+      <div class="news-row"><div class="date">Nov&nbsp;2025</div><div class="what"><span class="pin">paper</span>Our paper on <b>factual evaluation of medical LLMs with knowledge graphs</b> accepted as an <b>Oral</b> in the <b>AAAI 2026 AI for Social Impact (AISI) Track</b>.</div></div>
+      <div class="news-row"><div class="date">Sep&nbsp;2025</div><div class="what"><span class="pin">paper</span>Big congrats to lead author <b>Mingyu Huang</b> — our work on landscape features for biological fitness benchmarks selected as <b>NeurIPS 2025 Datasets and Benchmarks Spotlight</b> (top 2.2%).</div></div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section id="research" class="reveal">
+    <h2 class="sect">Research <span class="tag">themes</span></h2>
+    <p class="sect-sub">three threads that I keep braiding together.</p>
+    <div class="themes">
+      <article class="theme">
+        <div class="ix">— 01</div>
+        <h3>Foundation models for life sciences</h3>
+        <p>Large-scale models for genomic and biomedical data, with biology-grounded interpretability that goes beyond anecdotal evidence.</p>
+      </article>
+      <article class="theme">
+        <div class="ix">— 02</div>
+        <h3>LLM agents for scientific discovery</h3>
+        <p>Knowledge-graph-grounded agents combining structured retrieval with multi-hop reasoning — medicine, plant science, literature.</p>
+      </article>
+      <article class="theme">
+        <div class="ix">— 03</div>
+        <h3>Trustworthy &amp; robust ML</h3>
+        <p>Stress-testing modern ML through adversarial evaluation and multi-objective optimization — code intelligence and language models.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- PUBLICATIONS -->
+  <section id="publications" class="reveal">
+    <h2 class="sect">Publications</h2>
+    <p class="sect-sub">* indicates equal contribution.</p>
+    <div id="pub-app"></div>
+  </section>
+
+  <!-- SOFTWARE -->
+  <section id="software" class="reveal">
+    <h2 class="sect">Software <span class="tag">open source</span></h2>
+    <p class="sect-sub">tools I built or co-led.</p>
+    <div class="software">
+      <a class="repo" href="https://github.com/COLA-Laboratory/OmniGenBench" target="_blank" rel="noopener">
+        <h4>OmniGenBench</h4>
+        <div class="slug">COLA-Laboratory/OmniGenBench</div>
+        <p>Modular benchmarking platform for genomic foundation models — RNA structure, gene function, multi-species generalization.</p>
+        <div class="tags"><span class="tag">benchmark</span><span class="tag">genomics</span><span class="tag">foundation models</span></div>
+      </a>
+      <a class="repo" href="https://github.com/COLA-Laboratory/EvalXAI" target="_blank" rel="noopener">
+        <h4>EvalXAI</h4>
+        <div class="slug">COLA-Laboratory/EvalXAI</div>
+        <p>Interpretability toolkit for genomic FMs — attention viz, attribution methods, motif overlap, counterfactual perturbations.</p>
+        <div class="tags"><span class="tag">interpretability</span><span class="tag">eval</span><span class="tag">genomics</span></div>
+      </a>
+      <a class="repo" href="https://github.com/COLA-Laboratory/autoSKG" target="_blank" rel="noopener">
+        <h4>PlantScience.ai</h4>
+        <div class="slug">COLA-Laboratory/autoSKG</div>
+        <p>LLM-powered virtual scientist for plant biology, backed by a 4M+ entity / 10M+ edge knowledge graph from 11 databases.</p>
+        <div class="tags"><span class="tag">LLM agent</span><span class="tag">knowledge graph</span></div>
+      </a>
+      <a class="repo" href="https://github.com/COLA-Laboratory/EMOC" target="_blank" rel="noopener">
+        <h4>EMOC</h4>
+        <div class="slug">COLA-Laboratory/EMOC</div>
+        <p>C++ framework for multi-objective evolutionary optimization: 30+ algorithms, 80+ benchmarks, cross-platform GUI. Co-led development.</p>
+        <div class="tags"><span class="tag">c++</span><span class="tag">optimization</span></div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <span class="big">say&nbsp;hi&nbsp;— <a href="mailto:sz484@exeter.ac.uk">sz484@exeter.ac.uk</a></span>
+    <div class="ln">© 2026 Shasha Zhou · last updated May 2026</div>
+  </footer>
+
+</div>
+
+<button class="to-top" id="to-top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
+
+<!-- React + Babel for publications + tweaks -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>å
+
+<script type="text/babel">
+  const PUBS = [
+    {
+      y:2026, venue:'Under review · IEEE CIM',
+      title:'Mapping Literature Landscapes with Data-Driven Discovery: A Case Study on MOEA/D',
+      authors:[{n:'M. Huang'},{n:'S. Zhou',me:true},{n:'K. Li'}],
+      theme:'robust', badge:'Under review', badgeKind:'review',
+      abstract:'We are living in an era of "big literature", where scientific literature is expanding exponentially. While this growth presents new opportunities, it complicates mapping global scientific research landscapes, as manual review methods become infeasible. Recent advancements in machine learning, complex networks, and natural language processing have enabled numerous data-driven discovery methods. Building upon these tools, we introduce an end-to-end workflow for analyzing large-scale literature landscapes, LitLA. This workflow first integrates diverse publication metadata into a bibliographic knowledge graph (KG) representing the research landscape. It then offers tools for exploratory analysis of various landscape aspects. We demonstrate the effectiveness of LitLA via a case study on follow-up works of multi-objective evolutionary algorithm based on decomposition (MOEA/D). In doing so, we constructed the MOEA/D research landscape as a KG comprising over 5,400 papers, 10,000 authors, 1,600 institutions, and 78,000 keywords. With this landscape, we start with descriptive statistics and investigate prominent topics pertaining to MOEA/D and interrogate their spatial-temporal and bilateral relationships. We then map the collaboration and citation networks to reveal the community\'s growth over time. We further experiment whether learning on latent patterns of this landscape can hint on future research directions.',
+      bib:'',
+      links:{ abs:'', pdf:'https://arxiv.org/abs/2404.14228', code:'' }
+    },
+    {
+      y:2026, venue:'ICML',
+      title:'Position: Genomic Model Research Must Move Beyond Anecdotal Evaluation of Interpretability Methods',
+      authors:[{n:'S. Zhou',me:true,eq:true},{n:'M. Huang',eq:true},{n:'K. Li'}],
+      theme:'bio', badge:'Spotlight · top 5%',
+      abstract:'Advances in machine learning and computational power have unlocked the predictive potential of the human genome, yet biologists increasingly demand that these models also elucidate the underlying biological mechanisms. While interpretable machine learning (IML) techniques have been increasingly applied to bridge this gap, there has been a pervasive reliance on anecdotal validation: the vast majority of research employs a single IML method and reports only isolated successful instances. Through a benchmarking study on transcription factor binding, we demonstrate the risks of current practices. We show that different IML methods can often (1) yield contradictory explanations for identical predictions, (2) fail to localize known regulatory motifs, and (3) do not faithfully reflect the model\'s internal decision process. In light of this, we argue for a validation framework analogous to clinical trials. Just as trials require rigorous design and the reporting of adverse events, genomic interpretability must move beyond cherry-picked plausibility toward systematic assessment of consistency, faithfulness, and biological validity. To facilitate this, we propose a tiered framework to guide the rigorous evaluation and reporting of genomic IML methods.',
+      bib:'',
+      links:{ abs:'', pdf:'', code:'https://github.com/COLA-Laboratory/EvalXAI' }
+    },
+    {
+      y:2026, venue:'AAAI',
+      title:'Assessing Automated Fact-Checking for Medical LLM Responses with Knowledge Graphs',
+      authors:[{n:'S. Zhou',me:true},{n:'M. Huang'},{n:'J. Cole'},{n:'C. Britton'},{n:'M. Yin'},{n:'J. Wolber'},{n:'K. Li'}],
+      theme:'agents', badge:'Oral · top 5%',
+      abstract:'The recent proliferation of large language models (LLMs) holds the potential to revolutionize healthcare, with strong capabilities in diverse medical tasks. Yet, deploying LLMs in high-stakes healthcare settings requires rigorous verification and validation to understand any potential harm. This paper investigates the reliability and viability of using medical knowledge graphs (KGs) for the automated factuality evaluation of LLM-generated responses. To ground this investigation, we introduce FAITH, a framework designed to systematically probe the strengths and limitations of this KG-based approach. FAITH operates without reference answers by decomposing responses into atomic claims, linking them to a medical KG, and scoring them based on evidence paths. Experiments on diverse medical tasks with human subjective evaluations demonstrate that KG-grounded evaluation achieves considerably higher correlations with clinician judgments and can effectively distinguish LLMs with varying capabilities. It is also robust to textual variances. The inherent explainability of its scoring can further help users understand and mitigate the limitations of current LLMs. We conclude that while limitations exist, leveraging KGs is a prominent direction for automated factuality assessment in healthcare.',
+      bib:`@inproceedings{ZHCBYWL26,
+  author       = {Shasha Zhou and
+                  Mingyu Huang and
+                  Jack Cole and
+                  Charles Britton and
+                  Ming Yin and
+                  Jan Wolber and
+                  Ke Li},
+  title        = {Assessing Automated Fact-Checking for Medical {LLM} Responses with
+                  Knowledge Graphs},
+  booktitle    = {AAAI'26: Proc. of the Fortieth {AAAI} Conference on Artificial Intelligence, Thirty-Eighth
+                  Conference on Innovative Applications of Artificial Intelligence,
+                  Sixteenth Symposium on Educational Advances in Artificial Intelligence},
+  pages        = {39646--39656},
+  publisher    = {{AAAI} Press},
+  year         = {2026},
+  doi          = {10.1609/AAAI.V40I46.41317},
+}`,
+      links:{ abs:'', pdf:'https://ojs.aaai.org/index.php/AAAI/article/view/41317', code:'https://github.com/COLA-Laboratory/FAITH' }
+    },
+    {
+      y:2026, venue:'Molecular Plant',
+      title:'PlantScience.ai: An LLM-Powered Virtual Scientist for Plant Science',
+      authors:[{n:'H. Yu',eq:true},{n:'S. Zhou',me:true,eq:true},{n:'M. Huang',eq:true},{n:'L. Ding'},{n:'Y. Chen'},{n:'et al.'},{n:'K. Li'}],
+      theme:'agents', badge:'IF 24.1',
+      abstract:'The accelerating growth of plant science knowledge presents a major challenge to extracting accurate, up-to-date knowledge from an increasingly fragmented and domain-specific corpus. General-purpose large language models, while powerful, often misinterpret plant science terminology and lack mechanisms for source traceability. We created PlantScience.ai, a virtual plant biology scientist powered by an automated scientific knowledge graph construction pipeline. PlantScience.ai exhibits expert-level reasoning in plant biology and maintains scholarly rigor inciting the literature. Through continuous learning, it integrates the latest research to ensure that its knowledge base remains current and scientifically robust. Apart from providing the answers to scientific questions, PlantScience.ai can interact with human scientists, follow instructions, and retrieve information with citation awareness, grounding each response in primary sources to ensure accuracy and verifiability. PlantScience.ai marks a pivotal advance toward a collaborative scientific paradigm in which virtual and human plant scientists work synergistically to accelerate discovery while preserving the unique value of human insight. PlantScience.ai is available at https://plantscience.ai.',
+      bib:`
+@article{YZHD+26,
+	author = {Yu, Haopeng and Zhou, Shasha and Huang, Mingyu and Ding, Ling and Chen, Yuxuan and Wang, Yinru and Ren, Yingyu and Cheng, Nuo and Wang, Xinya and Liang, Jie and Zhang, Huakun and Ding, Yiliang and Li, Ke},
+	doi = {10.1016/j.molp.2026.03.010},
+	isbn = {1674-2052},
+	journal = {Molecular Plant},
+	month = {2026/05/21},
+	number = {5},
+	pages = {1117--1123},
+	publisher = {Elsevier},
+	title = {PlantScience.ai: An LLM-powered virtual scientist for plant science},
+	volume = {19},
+	year = {2026},
+}`,
+      links:{ abs:'', pdf:'https://www.cell.com/molecular-plant/fulltext/S1674-2052(26)00080-8', code:'https://github.com/COLA-Laboratory/autoSKG' }
+    },
+    {
+      y:2025, venue:'NeurIPS',
+      title:'Augmenting Biological Fitness Prediction Benchmarks with Landscape Features from GraphFLA',
+      authors:[{n:'M. Huang'},{n:'S. Zhou',me:true},{n:'K. Li'}],
+      theme:'bio', badge:'Spotlight · top 2.2%',
+      abstract:'Machine learning models increasingly map biological sequence-fitness landscapes to predict mutational effects. Effective evaluation of these models requires benchmarks curated from empirical data. Despite their impressive scales, existing benchmarks lack topographical information regarding the underlying fitness landscapes, which hampers interpretation and comparison of model performance beyond averaged scores. Here, we introduce GraphFLA, a Python framework that constructs and analyzes fitness landscapes from diverse modalities (DNA, RNA, protein, and beyond.), accommodating datasets up to millions of mutants. GraphFLA calculates 20 biologically relevant features that characterize 4 fundamental aspects of landscape topography. By applying GraphFLA to over 5,300 landscapes from ProteinGym, RNAGym, and CIS-BP, we demonstrate its utility in interpreting and comparing the performance of dozens of fitness prediction models, highlighting factors influencing model accuracy and respective advantages of different models. Additionally, we release 155 combinatorially complete empirical fitness landscapes, encompassing over 2.2 million sequences across various modalities. All the codes and datasets are available at https://github.com/COLA-Laboratory/GraphFLA.',
+      bib:`@inproceedings{HZL25,
+  author       = {Mingyu Huang and
+                  Shasha Zhou and
+                  Ke Li},
+  title        = {Augmenting Biological Fitness Prediction Benchmarks with Landscapes
+                  Features from GraphFLA},
+  booktitle    = {NeurIPS'25: Proc. of the 39th Annual Conference on Neural Information Processing Systems},
+  year         = {2025}
+}`,
+      links:{ abs:'', pdf:'https://neurips.cc/virtual/2025/loc/san-diego/poster/121713', code:'https://github.com/COLA-Laboratory/GraphFLA' }
+    },
+    {
+      y:2025, venue:'IJCAI',
+      title:'Conversational Exploration of Literature Landscape with LitChat',
+      authors:[{n:'M. Huang',eq:true},{n:'S. Zhou',me:true,eq:true},{n:'Y. Chen'},{n:'K. Li'}],
+      theme:'agents',
+      abstract:'We are living in an era of "big literature", where the volume of digital scientific publications is growing exponentially. While offering new opportunities, this also poses challenges for understanding literature landscapes, as traditional manual reviewing is no longer feasible. Recent large language models (LLMs) have shown strong capabilities for literature comprehension, yet they are incapable of offering "comprehensive, objective, open and transparent" views desired by systematic reviews due to their limited context windows and trust issues like hallucinations. Here we present LitChat, an end-to-end, interactive and conversational literature agent that augments LLM agents with data-driven discovery tools to facilitate literature exploration. LitChat automatically interprets user queries, retrieves relevant sources, constructs knowledge graphs, and employs diverse data-mining techniques to generate evidence-based insights addressing user needs. We illustrate the effectiveness of LitChat via a case study on AI4Health, highlighting its capacity to quickly navigate the users through large-scale literature landscape with data-based evidence that is otherwise infeasible with traditional means.',
+      bib:`@inproceedings{HZCL25,
+  author       = {Mingyu Huang and
+                  Shasha Zhou and
+                  Yuxuan Chen and
+                  Ke Li},
+  title        = {Conversational Exploration of Literature Landscape with LitChat},
+  booktitle    = {IJCAI'25: Proc. of the Thirty-Fourth International Joint Conference on
+                  Artificial Intelligence},
+  pages        = {11058--11061},
+  year         = {2025}
+}`,
+      links:{ abs:'', pdf:'http://dl.acm.org/doi/10.24963/ijcai.2025/1262', code:'https://github.com/COLA-Laboratory/LitChat' }
+    },
+    {
+      y:2024, venue:'FSE',
+      title:'Evolutionary Multi-objective Optimization for Contextual Adversarial Example Generation',
+      authors:[{n:'S. Zhou',me:true},{n:'M. Huang'},{n:'Y. Sun'},{n:'K. Li'}],
+      theme:'robust',
+      abstract:'The emergence of the ‘code naturalness’ concept, which suggests that software code shares statistical properties with natural language, paves the way for deep neural networks (DNNs) in software engineering (SE). However, DNNs can be vulnerable to certain human imperceptible variations in the input, known as adversarial examples (AEs), which could lead to adverse model performance. Numerous attack strategies have been proposed to generate AEs in the context of computer vision and natural language processing, but the same is less true for source code of programming languages in SE. One of the challenges is derived from various constraints including syntactic, semantics and minimal modification ratio. These constraints, however, are subjective and can be conflicting with the purpose of fooling DNNs. This paper develops a multi-objective adversarial attack method (dubbed MOAA), a tailored NSGA-II, a powerful evolutionary multi-objective (EMO) algorithm, integrated with CodeT5 to generate high-quality AEs based on contextual information of the original code snippet. Experiments on 5 source code tasks with 10 datasets of 6 different programming languages show that our approach can generate a diverse set of high-quality AEs with promising transferability. In addition, using our AEs, for the first time, we provide insights into the internal behavior of pre-trained models.',
+      bib:`@article{ZhouHSL24,
+  author       = {Shasha Zhou and
+                  Mingyu Huang and
+                  Yanan Sun and
+                  Ke Li},
+  title        = {Evolutionary Multi-objective Optimization for Contextual Adversarial
+                  Example Generation},
+  journal      = {Proc. {ACM} Softw. Eng.},
+  volume       = {1},
+  number       = {{FSE}},
+  pages        = {2285--2308},
+  year         = {2024},
+}`,
+      links:{ abs:'', pdf:'https://dl.acm.org/doi/10.1145/3660808', code:'https://github.com/COLA-Laboratory/MOAA' }
+    },
+    {
+      y:2023, venue:'IEEE SMC',
+      title:'Empirical Studies of Resampling Strategies in Noisy Evolutionary Multi-objective Optimization',
+      authors:[{n:'S. Zhou',me:true},{n:'K. Li'}],
+      theme:'robust',
+      abstract:'Optimization problems are ubiquitous in real-world engineering scenarios where the goals are to enhance interested aspects such as efficiency, productivity, and profitability. However, solving practical optimization problems could be non-trivial, partly due to the presence of a wide range of noises, including environmental noises, model biases, time-domain variations, measurement uncertainties and many other uncontrolled variables. In this paper, we empirically study the effect of noise range, sample size and resampling type on the solution quality of MOEAs when noise is added to decision variables. Our empirical results, conducted on three commonly used Multi-Objective Optimization Problems (MOEAs), i.e. NSGA-II, MOEA/D and IBEA, demonstrate that noise range has more significant impact on the robustness of optimization algorithms compared to sample size and resampling type. In addition, we introduce the concept of bad point, which is able to illustrate how noise affects the performance of different MOEAs.',
+      bib:`@inproceedings{ZL23,
+  author       = {Shasha Zhou and
+                  Ke Li},
+  title        = {Empirical Studies of Resampling Strategies in Noisy Evolutionary Multi-Objective
+                  Optimization},
+  booktitle    = {SMC'23: Proc. of the IEEE International Conference on Systems, Man, and Cybernetics},
+  pages        = {1715--1720},
+  publisher    = {{IEEE}},
+  year         = {2023},
+}`,
+      links:{ abs:'', pdf:'https://ieeexplore.ieee.org/document/10394174', code:'' }
+    },
+    {
+      y:2022, venue:'PPSN',
+      title:'Attention-Based Genetic Algorithm for Adversarial Attack in Natural Language Processing',
+      authors:[{n:'S. Zhou',me:true},{n:'K. Li'},{n:'G. Min'}],
+      theme:'robust',
+      abstract:'Many recent studies have shown that deep neural networks (DNNs) are vulnerable to adversarial examples. Adversarial attacks on DNNs for natural language processing tasks are notoriously more challenging than that in computer vision. This paper proposes an attention-based genetic algorithm (dubbed AGA) for generating adversarial examples under a black-box setting. In particular, the attention mechanism helps identify the relatively more important words in a given text. Based on this information, bespoke crossover and mutation operators are developed to navigate AGA to focus on exploiting relatively more important words thus leading to a save of computational resources. Experiments on three widely used datasets demonstrate that AGA achieves a higher success rate with less than 48% of the number of queries than the peer algorithms. In addition, the underlying DNN can become more robust by using the adversarial examples obtained by AGA for adversarial training.',
+      bib:`@inproceedings{ZhouLM22,
+  author       = {Shasha Zhou and
+                  Ke Li and
+                  Geyong Min},
+  title        = {Attention-Based Genetic Algorithm for Adversarial Attack in Natural
+                  Language Processing},
+  booktitle    = {PPSN'22: Proc. of the Parallel Problem Solving from Nature},
+  series       = {Lecture Notes in Computer Science},
+  pages        = {341--355},
+  publisher    = {Springer},
+  year         = {2022}
+}`,
+      links:{ abs:'', pdf:'https://dl.acm.org/doi/10.1007/978-3-031-14714-2_24', code:'' }
+    },
+    {
+      y:2022, venue:'GECCO',
+      title:'Adversarial Example Generation via Genetic Algorithm: A Preliminary Result',
+      authors:[{n:'S. Zhou',me:true},{n:'K. Li'},{n:'G. Min'}],
+      theme:'robust',
+      abstract:'In recent years, some studies showed that deep neural networks (DNNs) are vulnerable to being attacked by small perturbated examples. To satisfy the lexical, grammatical, and semantic constrain, some works proposed using black-box population-based optimization algorithms to attack neural networks in natural language processing. However, they are inefficient enough because they do not consider the characteristics of the text itself. Also, they are slow to close to the decision boundary. In this paper, we propose a more efficient attention based genetic algorithm adversarial attack method, called AGA. We use attention mechanism to pay more attention to the important tokens and utilize the multi-membered strategy to accelerate the search procedure. The result shows that our attack achieves a higher success rate with less than 136% of the number of queries than the existing methods.',
+      bib:`@inproceedings{ZhouLM22,
+  author       = {Shasha Zhou and
+                  Ke Li and
+                  Geyong Min},
+  title        = {Adversarial example generation via genetic algorithm: a preliminary
+                  result},
+  booktitle    = {{GECCO} '22: Genetic and Evolutionary Computation Conference},
+  pages        = {469--470},
+  publisher    = {{ACM}},
+  year         = {2022},
+  doi          = {10.1145/3520304.3528981},
+}`,
+      links:{ abs:'', pdf:'https://dl.acm.org/doi/10.1145/3520304.3528981', code:'' }
+    },
+  ];
+
+  const FILTERS = [
+    {id:'all',label:'All'},
+    {id:'bio',label:'Foundation Models · Biology'},
+    {id:'agents',label:'LLM Agents · Science'},
+    {id:'robust',label:'Robust ML · Optimization'},
+  ];
+
+  const VENUE_LABELS = {
+    'ICML':'ICML 2026', 'NeurIPS':'NeurIPS 2025', 'AAAI':'AAAI 2026',
+    'IJCAI':'IJCAI 2025', 'Molecular Plant':'Molecular Plant 2026',
+    'FSE':'ACM FSE 2024', 'IEEE SMC':'IEEE SMC 2023',
+    'PPSN':'PPSN 2022', 'GECCO':'GECCO 2022',
+    'Under review · IEEE CIM':'Under review · IEEE Computational Intelligence Magazine'
+  };
+
+  function Author({a}){
+    return (
+      <span>
+        {a.me ? <span className="me">{a.n}</span> : a.n}
+        {a.eq && <sup style={{fontFamily:'var(--mono)',fontSize:'9px'}}>*</sup>}
+      </span>
+    );
+  }
+
+  function BibPanel({bib}){
+    const [copied,setCopied] = React.useState(false);
+    const onCopy = () => {
+      if(navigator.clipboard){
+        navigator.clipboard.writeText(bib).then(()=>{
+          setCopied(true);
+          setTimeout(()=>setCopied(false), 1500);
+        });
+      }
+    };
+    return (
+      <div className="bib-panel">
+        <pre>{bib}</pre>
+        <button className="copy-btn" onClick={onCopy}>{copied?'copied':'copy'}</button>
+      </div>
+    );
+  }
+
+  function Publications(){
+    const [filter,setFilter]=React.useState('all');
+    const [expanded,setExpanded]=React.useState({});
+    const list = PUBS.filter(p => filter==='all' || p.theme===filter);
+    // split in-progress papers (preprint / under review) from published; group published by year (descending)
+    const inProgress = list.filter(p => p.badge === 'Preprint' || p.badge === 'Under review');
+    const published = list.filter(p => p.badge !== 'Preprint' && p.badge !== 'Under review');
+    const groups = {};
+    published.forEach(p=>{ (groups[p.y]=groups[p.y]||[]).push(p); });
+    const years = Object.keys(groups).map(Number).sort((a,b)=>b-a);
+
+    const togglePanel = (title, kind) => {
+      const k = title + '::' + kind;
+      setExpanded(prev => ({...prev, [k]: !prev[k]}));
+    };
+
+    const renderPub = (p,i) => {
+      const L = p.links || {};
+      const titleHref = L.abs || L.pdf || null;
+      const absOpen = !!expanded[p.title + '::abs'];
+      const bibOpen = !!expanded[p.title + '::bib'];
+      return (
+        <div className="pub" key={i}>
+          <div className={'thumb t-'+p.theme}><span>{p.venue}</span></div>
+          <div className="body">
+            <div className="title">
+              {titleHref
+                ? <a href={titleHref} target="_blank" rel="noopener">{p.title}</a>
+                : <span>{p.title}</span>}
+            </div>
+            <div className="authors">
+              {p.authors.map((a,j)=> <React.Fragment key={j}><Author a={a}/>{j<p.authors.length-1?', ':''}</React.Fragment>)}
+            </div>
+            <div className="venue"><em>{VENUE_LABELS[p.venue]||p.venue}</em></div>
+            {p.badge && <div className="meta"><span className={'badge '+(p.badgeKind||'')}>{p.badge}</span></div>}
+            <div className="btns">
+              {L.pdf  && <a href={L.pdf}  target="_blank" rel="noopener">PDF</a>}
+              {p.abstract && (
+                <a href="#" className={absOpen?'on':''} onClick={e=>{e.preventDefault();togglePanel(p.title,'abs')}}>
+                  {absOpen ? 'hide' : 'abs'}
+                </a>
+              )}
+              {p.bib && (
+                <a href="#" className={bibOpen?'on':''} onClick={e=>{e.preventDefault();togglePanel(p.title,'bib')}}>
+                  {bibOpen ? 'hide' : 'bib'}
+                </a>
+              )}
+              {L.code && <a href={L.code} target="_blank" rel="noopener">code</a>}
+            </div>
+            {absOpen && p.abstract && (
+              <div className="abs-panel">{p.abstract}</div>
+            )}
+            {bibOpen && p.bib && <BibPanel bib={p.bib}/>}
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <>
+        <div className="filters">
+          {FILTERS.map(f => (
+            <button key={f.id} className={filter===f.id?'on':''} onClick={()=>setFilter(f.id)}>{f.label}</button>
+          ))}
+        </div>
+        {inProgress.length > 0 && (
+          <div className="year-group">
+            <div className="yr" style={{fontSize:'22px'}}>Preprints</div>
+            <div className="year-pubs">
+              {inProgress.map(renderPub)}
+            </div>
+          </div>
+        )}
+        {years.map(y => (
+          <div className="year-group" key={y}>
+            <div className="yr">{y}</div>
+            <div className="year-pubs">
+              {groups[y].map(renderPub)}
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('pub-app')).render(<Publications/>);
+
+  // ── Tweaks ─────────────────────────────────────────────────────────────────
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent": "#0f766e",
+    "showThumbs": false,
+    "stickyYear": true
+  }/*EDITMODE-END*/;
+
+  function TweaksApp(){
+    const [t,setTweak] = useTweaks(TWEAK_DEFAULTS);
+    React.useEffect(()=>{
+      const root = document.documentElement;
+      root.style.setProperty('--accent', t.accent);
+      // derive soft from accent
+      root.style.setProperty('--accent-soft', t.accent + '14');
+      document.body.classList.toggle('hide-thumbs', !t.showThumbs);
+      document.body.classList.toggle('no-sticky', !t.stickyYear);
+    },[t]);
+
+    return (
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Theme"/>
+        <TweakColor label="Accent" value={t.accent}
+          options={['#0f766e','#4b3df5','#b45309','#be185d','#0e1116']}
+          onChange={v=>setTweak('accent',v)} />
+        <TweakSection label="Layout"/>
+        <TweakToggle label="Paper thumbnails" value={t.showThumbs} onChange={v=>setTweak('showThumbs',v)}/>
+        <TweakToggle label="Sticky year column" value={t.stickyYear} onChange={v=>setTweak('stickyYear',v)}/>
+      </TweaksPanel>
+    );
+  }
+  const tweakMount = document.createElement('div');
+  document.body.appendChild(tweakMount);
+  ReactDOM.createRoot(tweakMount).render(<TweaksApp/>);
+</script>
+
+<script>
+  // theme toggle
+  const modeBtn = document.getElementById('mode-btn');
+  const apply = m => { document.documentElement.dataset.mode = m; localStorage.setItem('mode', m); };
+  apply(localStorage.getItem('mode') || 'light');
+  modeBtn.addEventListener('click', () => apply(document.documentElement.dataset.mode === 'dark' ? 'light' : 'dark'));
+
+  // reveal on scroll
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}});
+  },{threshold:.06});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // back to top
+  const toTop = document.getElementById('to-top');
+  const toggleToTop = () => toTop.classList.toggle('show', window.scrollY > 400);
+  window.addEventListener('scroll', toggleToTop, {passive:true});
+  toggleToTop();
+  toTop.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+
+  // smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      const id = a.getAttribute('href').slice(1);
+      if(!id) return;
+      const t = document.getElementById(id);
+      if(t){e.preventDefault();window.scrollTo({top:t.offsetTop-72,behavior:'smooth'})}
+    });
+  });
+</script>
+
+<style>
+  /* tweaks-driven overrides */
+  body.hide-thumbs .pub{grid-template-columns:1fr}
+  body.hide-thumbs .pub .thumb{display:none}
+  body.no-sticky .year-group .yr{position:static}
+</style>
+
+</body>
+</html>
